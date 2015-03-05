@@ -57,21 +57,24 @@ class Scroller
     @setViewportX newViewportX
 
 
-init = ->
-  @stage = new PIXI.Stage 0x66FF99
-  @renderer = PIXI.autoDetectRenderer 512, 384
-  document.body.appendChild @renderer.view
+class Main
+  SCROLL_SPEED = 5
 
-  @scroller = new Scroller @stage
+  constructor: ->
+    @stage = new PIXI.Stage 0x66FF99
+    @renderer = PIXI.autoDetectRenderer 512, 384
+    document.body.appendChild @renderer.view
 
-  requestAnimFrame update
+    @scroller = new Scroller @stage
 
+    requestAnimFrame @update
 
-update = ->
-  @scroller.moveViewportXBy 5
+  update: =>
+    @scroller.moveViewportXBy SCROLL_SPEED
 
-  @renderer.render @stage
-  requestAnimFrame update
+    @renderer.render @stage
+    requestAnimFrame @update
+
 
 $ ->
-  init()
+  main = new Main
