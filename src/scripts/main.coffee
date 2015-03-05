@@ -1,18 +1,18 @@
 class Far extends PIXI.TilingSprite
   constructor: ->
-    super
+    texture = PIXI.Texture.fromImage '../img/bg-far.png'
+    super texture, 512, 256
+    @position.x = 0
+    @position.y = 0
+    @tilePosition.x = 0
+    @tilePosition.y = 0
 
 init = ->
   @stage = new PIXI.Stage 0x66FF99
   @renderer = PIXI.autoDetectRenderer 512, 384
   document.body.appendChild @renderer.view
 
-  farTexture = PIXI.Texture.fromImage '../img/bg-far.png'
-  @far = new Far farTexture, 512, 256
-  @far.position.x = 0
-  @far.position.y = 0
-  @far.tilePosition.x = 0
-  @far.tilePosition.y = 0
+  @far = new Far
   @stage.addChild @far
 
   midTexture = PIXI.Texture.fromImage '../img/bg-mid.png'
