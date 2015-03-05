@@ -27,6 +27,11 @@ gulp.task 'css', ->
     .pipe $.autoprefixer 'last 1 version'
     .pipe gulp.dest 'dist/styles'
 
+# Images
+gulp.task 'img', ->
+  gulp.src ['src/img/*.png', 'src/img/*.jpg']
+    .pipe gulp.dest 'dist/img'
+
 # Copy
 gulp.task 'copy', ['copy:js']
 
@@ -41,7 +46,7 @@ gulp.task 'copy:js', ->
 gulp.task 'clean', del.bind null, ['dist'], dot: true
 
 # Default task
-gulp.task 'default', ['html', 'js', 'css', 'copy']
+gulp.task 'default', ['html', 'js', 'css', 'img', 'copy']
 
 # BrowserSync
 gulp.task 'server', ['default'], ->
