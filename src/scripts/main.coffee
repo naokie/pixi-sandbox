@@ -7,6 +7,9 @@ class Far extends PIXI.TilingSprite
     @tilePosition.x = 0
     @tilePosition.y = 0
 
+  update: ->
+    @tilePosition.x -= 0.128
+
 class Mid extends PIXI.TilingSprite
   constructor: ->
     texture = PIXI.Texture.fromImage '../img/bg-mid.png'
@@ -15,6 +18,9 @@ class Mid extends PIXI.TilingSprite
     @position.y = 128
     @tilePosition.x = 0
     @tilePosition.y = 0
+
+  update: ->
+    @tilePosition.x -= 0.64
 
 init = ->
   @stage = new PIXI.Stage 0x66FF99
@@ -30,8 +36,8 @@ init = ->
   requestAnimFrame update
 
 update = ->
-  @far.tilePosition.x -= 0.128
-  @mid.tilePosition.x -= 0.64
+  @far.update()
+  @mid.update()
 
   @renderer.render @stage
   requestAnimFrame update
