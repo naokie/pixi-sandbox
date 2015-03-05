@@ -29,7 +29,7 @@ gulp.task 'css', ->
 
 # Images
 gulp.task 'img', ->
-  gulp.src ['src/img/*.png', 'src/img/*.jpg']
+  gulp.src ['src/img/*.png', 'src/img/*.json']
     .pipe gulp.dest 'dist/img'
 
 # Copy

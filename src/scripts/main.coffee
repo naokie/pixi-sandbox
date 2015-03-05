@@ -65,9 +65,7 @@ class Main
     @renderer = PIXI.autoDetectRenderer 512, 384
     document.body.appendChild @renderer.view
 
-    @scroller = new Scroller @stage
-
-    requestAnimFrame @update
+    @loadSpriteSheet()
 
   update: =>
     @scroller.moveViewportXBy SCROLL_SPEED
@@ -75,6 +73,29 @@ class Main
     @renderer.render @stage
     requestAnimFrame @update
 
+  loadSpriteSheet: ->
+    assetsToLoad = [
+      "img/wall.json"
+      "img/bg-mid.png"
+      "img/bg-far.png"
+    ]
+    loader = new PIXI.AssetLoader assetsToLoad
+    loader.onComplete = @spriteSheetLoaded
+    loader.load()
+
+  spriteSheetLoaded: =>
+    @scroller = new Scroller @stage
+    requestAnimFrame @update
+
+    slice1 = PIXI.Sprite.fromFrame "edge_01"
+    slice1.position.x = 32
+    slice1.position.y = 64
+    @stage.addChild slice1
+
+    slice2 = PIXI.Sprite.fromFrame "decoration_03"
+    slice2.position.x = 128
+    slice2.position.y = 64
+    @stage.addChild slice2
 
 $ ->
   main = new Main
