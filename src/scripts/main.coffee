@@ -52,6 +52,10 @@ class Scroller
   getViewportX: ->
     @viewportX
 
+  moveViewportXBy: (units) ->
+    newViewportX = @viewportX + units
+    @setViewportX newViewportX
+
 
 init = ->
   @stage = new PIXI.Stage 0x66FF99
@@ -64,8 +68,7 @@ init = ->
 
 
 update = ->
-  newViewportX = @scroller.getViewportX() + 5
-  @scroller.setViewportX newViewportX
+  @scroller.moveViewportXBy 5
 
   @renderer.render @stage
   requestAnimFrame update
