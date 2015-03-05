@@ -1,4 +1,6 @@
 class Far extends PIXI.TilingSprite
+  DELTA_X = 0.128
+
   constructor: ->
     texture = PIXI.Texture.fromImage '../img/bg-far.png'
     super texture, 512, 256
@@ -6,12 +8,17 @@ class Far extends PIXI.TilingSprite
     @position.y = 0
     @tilePosition.x = 0
     @tilePosition.y = 0
+    @viewportX = 0
 
-  update: ->
-    @tilePosition.x -= 0.128
+  setViewportX: (newViewportX) ->
+    distanceTravelled = newViewportX - @viewportX
+    @viewportX = newViewportX
+    @tilePosition.x -= (distanceTravelled * DELTA_X)
 
 
 class Mid extends PIXI.TilingSprite
+  DELTA_X = 0.64
+
   constructor: ->
     texture = PIXI.Texture.fromImage '../img/bg-mid.png'
     super texture, 512, 256
@@ -19,9 +26,12 @@ class Mid extends PIXI.TilingSprite
     @position.y = 128
     @tilePosition.x = 0
     @tilePosition.y = 0
+    @viewportX = 0
 
-  update: ->
-    @tilePosition.x -= 0.64
+  setViewportX: (newViewportX) ->
+    distanceTravelled = newViewportX - @viewportX
+    @viewportX = newViewportX
+    @tilePosition.x -= (distanceTravelled * DELTA_X)
 
 
 class Scroller
@@ -32,9 +42,15 @@ class Scroller
     @mid = new Mid
     stage.addChild @mid
 
-  update: ->
-    @far.update()
-    @mid.update()
+    @viewportX = 0
+
+  setViewportX: (viewportX) ->
+    @viewportX = viewportX
+    @far.setViewportX viewportX
+    @mid.setViewportX viewportX
+
+  getViewportX: ->
+    @viewportX
 
 
 init = ->
@@ -48,7 +64,8 @@ init = ->
 
 
 update = ->
-  @scroller.update()
+  newViewportX = @scroller.getViewportX() + 5
+  @scroller.setViewportX newViewportX
 
   @renderer.render @stage
   requestAnimFrame update
