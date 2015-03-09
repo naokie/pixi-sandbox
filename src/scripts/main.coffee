@@ -57,6 +57,39 @@ class Scroller
     @setViewportX newViewportX
 
 
+class WallSpritesPool
+  constructor: ->
+    @createWindows()
+
+  borrowWindow: ->
+    @windows.shift()
+
+  returnWindow: (sprite) ->
+    @windows.push sprite
+
+  createWindows: ->
+    @windows = []
+
+    @addWindowSprites 6, 'window_01'
+    @addWindowSprites 6, 'window_02'
+
+    @shuffle @windows
+
+  addWindowSprites: (amount, frameId) ->
+    for i in [0...amount]
+      sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
+      @windows.push sprite
+
+  shuffle: (array) ->
+    len = array.length
+    shuffles = len * 3
+
+    for i in [0...shuffles]
+      wallSlice = array.pop()
+      pos = Math.floor Math.random() * (len - 1)
+      array.splice pos, 0, wallSlice
+
+
 class Main
   SCROLL_SPEED = 5
 
@@ -87,15 +120,23 @@ class Main
     @scroller = new Scroller @stage
     requestAnimFrame @update
 
-    slice1 = PIXI.Sprite.fromFrame "edge_01"
-    slice1.position.x = 32
-    slice1.position.y = 64
-    @stage.addChild slice1
+    @pool = new WallSpritesPool
+    @wallSlices = []
 
-    slice2 = PIXI.Sprite.fromFrame "decoration_03"
-    slice2.position.x = 128
-    slice2.position.y = 64
-    @stage.addChild slice2
+  borrowWallSprites: (num) ->
+    for i in [0...num]
+      sprite = @pool.borrowWindow()
+      sprite.position.x = -32 + (i * 64)
+      sprite.position.y = 128
+
+      @wallSlices.push sprite
+      @stage.addChild sprite
+
+  returnWallSprites: ->
+    for sprite in @wallSlices
+      @stage.removeChild sprite
+      @pool.returnWindow sprite
+
 
 $ ->
   main = new Main
