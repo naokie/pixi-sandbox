@@ -60,12 +60,19 @@ class Scroller
 class WallSpritesPool
   constructor: ->
     @createWindows()
+    @createDecorations()
 
   borrowWindow: ->
     @windows.shift()
 
   returnWindow: (sprite) ->
     @windows.push sprite
+
+  borrowDecoration: ->
+    @decorations.shift()
+
+  returnDecoration: (sprite) ->
+    @decorations.push sprite
 
   createWindows: ->
     @windows = []
@@ -75,10 +82,24 @@ class WallSpritesPool
 
     @shuffle @windows
 
+  createDecorations: () ->
+    @decorations = []
+
+    @addDecorationSprites 6, 'decoration_01'
+    @addDecorationSprites 6, 'decoration_02'
+    @addDecorationSprites 6, 'decoration_03'
+
+    @shuffle @decorations
+
   addWindowSprites: (amount, frameId) ->
     for i in [0...amount]
       sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
       @windows.push sprite
+
+  addDecorationSprites: (amount, frameId) ->
+    for i in [0...amount]
+      sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
+      @decorations.push sprite
 
   shuffle: (array) ->
     len = array.length
@@ -125,7 +146,11 @@ class Main
 
   borrowWallSprites: (num) ->
     for i in [0...num]
-      sprite = @pool.borrowWindow()
+      if i % 2 is 0
+        sprite = @pool.borrowWindow()
+      else
+        sprite = @pool.borrowDecoration()
+
       sprite.position.x = -32 + (i * 64)
       sprite.position.y = 128
 
@@ -133,9 +158,12 @@ class Main
       @stage.addChild sprite
 
   returnWallSprites: ->
-    for sprite in @wallSlices
+    for sprite, i in @wallSlices
       @stage.removeChild sprite
-      @pool.returnWindow sprite
+      if i % 2 is 0
+        @pool.returnWindow sprite
+      else
+        @pool.returnDecoration sprite
 
 
 $ ->
