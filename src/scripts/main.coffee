@@ -186,26 +186,42 @@ class Main
     @pool = new WallSpritesPool
     @wallSlices = []
 
-  borrowWallSprites: (num) ->
-    for i in [0...num]
-      if i % 2 is 0
-        sprite = @pool.borrowWindow()
-      else
-        sprite = @pool.borrowDecoration()
+  generateTestWallSpan: ->
+    lookupTable = [
+      @pool.borrowFrontEdge
+      @pool.borrowWindow
+      @pool.borrowDecoration
+      @pool.borrowWindow
+      @pool.borrowDecoration
+      @pool.borrowWindow
+      @pool.borrowBackEdge
+    ]
 
-      sprite.position.x = -32 + (i * 64)
+    for borrowFunc, i in lookupTable
+      sprite = borrowFunc.call @pool
+      sprite.position.x = 32 + (i * 64)
       sprite.position.y = 128
 
       @wallSlices.push sprite
       @stage.addChild sprite
 
-  returnWallSprites: ->
-    for sprite, i in @wallSlices
+  clearTestWallSpan: ->
+    lookupTable = [
+      @pool.returnFrontEdge
+      @pool.returnWindow
+      @pool.returnDecoration
+      @pool.returnWindow
+      @pool.returnDecoration
+      @pool.returnWindow
+      @pool.returnBackEdge
+    ]
+
+    for returnFunc, i in lookupTable
+      sprite = @wallSlices[i]
       @stage.removeChild sprite
-      if i % 2 is 0
-        @pool.returnWindow sprite
-      else
-        @pool.returnDecoration sprite
+      returnFunc.call @pool, sprite
+
+    @wallSlices = []
 
 
 $ ->
