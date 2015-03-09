@@ -63,6 +63,7 @@ class WallSpritesPool
     @createDecorations()
     @createFrontEdges()
     @createBackEdges()
+    @createSteps()
 
   borrowWindow: ->
     @windows.shift()
@@ -87,6 +88,12 @@ class WallSpritesPool
 
   returnBackEdge: (sprite) ->
     @backEdges.push sprite
+
+  borrowStep: ->
+    @steps.shift()
+
+  returnStep: (sprite) ->
+    @steps.push sprite
 
   createWindows: ->
     @windows = []
@@ -121,6 +128,10 @@ class WallSpritesPool
 
     @shuffle @backEdges
 
+  createSteps: ->
+    @steps = []
+    @addStepSprites 2, 'step_01'
+
   addWindowSprites: (amount, frameId) ->
     for i in [0...amount]
       sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
@@ -142,6 +153,12 @@ class WallSpritesPool
       sprite.anchor.x = 1
       sprite.scale.x = -1
       @backEdges.push sprite
+
+  addStepSprites: (amount, frameId) ->
+    for i in [0...amount]
+      sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
+      sprite.anchor.y = 0.25
+      @steps.push sprite
 
   shuffle: (array) ->
     len = array.length
@@ -191,16 +208,24 @@ class Main
       @pool.borrowFrontEdge
       @pool.borrowWindow
       @pool.borrowDecoration
-      @pool.borrowWindow
-      @pool.borrowDecoration
+      @pool.borrowStep
       @pool.borrowWindow
       @pool.borrowBackEdge
     ]
 
+    yPos = [
+      128
+      128
+      128
+      192
+      192
+      192
+    ]
+
     for borrowFunc, i in lookupTable
       sprite = borrowFunc.call @pool
-      sprite.position.x = 32 + (i * 64)
-      sprite.position.y = 128
+      sprite.position.x = 64 + (i * 64)
+      sprite.position.y = yPos[i]
 
       @wallSlices.push sprite
       @stage.addChild sprite
@@ -210,8 +235,7 @@ class Main
       @pool.returnFrontEdge
       @pool.returnWindow
       @pool.returnDecoration
-      @pool.returnWindow
-      @pool.returnDecoration
+      @pool.returnStep
       @pool.returnWindow
       @pool.returnBackEdge
     ]
