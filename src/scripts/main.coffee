@@ -61,6 +61,8 @@ class WallSpritesPool
   constructor: ->
     @createWindows()
     @createDecorations()
+    @createFrontEdges()
+    @createBackEdges()
 
   borrowWindow: ->
     @windows.shift()
@@ -73,6 +75,18 @@ class WallSpritesPool
 
   returnDecoration: (sprite) ->
     @decorations.push sprite
+
+  borrowFrontEdge: ->
+    @frontEdges.shift()
+
+  returnFrontEdge: (sprite) ->
+    @frontEdges.push sprite
+
+  borrowBackEdge: ->
+    @backEdges.shift()
+
+  returnBackEdge: (sprite) ->
+    @backEdges.push sprite
 
   createWindows: ->
     @windows = []
@@ -91,6 +105,22 @@ class WallSpritesPool
 
     @shuffle @decorations
 
+  createFrontEdges: ->
+    @frontEdges = []
+
+    @addFrontEdgeSprites 2, 'edge_01'
+    @addFrontEdgeSprites 2, 'edge_02'
+
+    @shuffle @frontEdges
+
+  createBackEdges: ->
+    @backEdges = []
+
+    @addBackEdgeSprites 2, 'edge_01'
+    @addBackEdgeSprites 2, 'edge_02'
+
+    @shuffle @backEdges
+
   addWindowSprites: (amount, frameId) ->
     for i in [0...amount]
       sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
@@ -100,6 +130,18 @@ class WallSpritesPool
     for i in [0...amount]
       sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
       @decorations.push sprite
+
+  addFrontEdgeSprites: (amount, frameId) ->
+    for i in [0...amount]
+      sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
+      @frontEdges.push sprite
+
+  addBackEdgeSprites: (amount, frameId) ->
+    for i in [0...amount]
+      sprite = new PIXI.Sprite PIXI.Texture.fromFrame frameId
+      sprite.anchor.x = 1
+      sprite.scale.x = -1
+      @backEdges.push sprite
 
   shuffle: (array) ->
     len = array.length
